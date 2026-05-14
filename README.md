@@ -111,4 +111,4 @@ pytest tests/
 
 ---
 
-*Developed for the Gen AI Engineering Team - GCP Stack Focus.*
+*Developed by Vaibhav Gen AI Engineer.*
