@@ -1,0 +1,15 @@
+# Core API framework
+fastapi==0.115.12
+uvicorn[standard]==0.34.0
+
+# HTTP client (Ollama + OpenAI calls)
+httpx==0.28.1
+
+# Environment variable loading
+python-dotenv==1.1.0
+
+# NLP — used in LOCAL mode for insight extraction (intent + sentiment)
+# NLTK: Part-of-speech tagging for intent classification
+# vaderSentiment: Valence-aware sentiment analysis optimised for chat
+nltk==3.9.1
+vaderSentiment==3.3.2
