@@ -14,6 +14,7 @@ interface ConversationSidebarProps {
   onDeleteConversation: (id: string) => void;
   onNewChat: () => void;
   isGenerating: boolean;
+  onGenerateReport: () => void;
 }
 
 // ── Date grouping helper ────────────────────────────────────────────────────────
@@ -49,7 +50,31 @@ const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
   onDeleteConversation,
   onNewChat,
   isGenerating,
+  onGenerateReport,
 }) => {
+  const [docText, setDocText] = React.useState('');
+  const [isIndexing, setIsIndexing] = React.useState(false);
+
+  const handleIndex = async () => {
+    if (!docText.trim()) return;
+    setIsIndexing(true);
+    try {
+      const res = await fetch('http://localhost:8000/api/documents/index', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: docText }),
+      });
+      const data = await res.json();
+      alert(`Indexed ${data.chunks_indexed} chunks successfully!`);
+      setDocText('');
+    } catch (e) {
+      alert('Failed to index document.');
+      console.error(e);
+    } finally {
+      setIsIndexing(false);
+    }
+  };
+
   // Group conversations by date label
   const grouped = useMemo(() => {
     const groups: Record<string, Conversation[]> = {
@@ -79,6 +104,36 @@ const ConversationSidebar: React.FC<ConversationSidebarProps> = ({
         >
           <span className="text-lg leading-none">✏️</span>
           New Chat
+        </button>
+        
+        <button
+          onClick={onGenerateReport}
+          disabled={isGenerating}
+          className="w-full mt-2 flex items-center gap-2 px-3 py-2.5 rounded-lg border border-purple-500/50 bg-purple-900/20 text-purple-300 hover:bg-purple-900/40 hover:text-purple-200 transition-colors text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          <span className="text-lg leading-none">📊</span>
+          Run Benchmark
+        </button>
+      </div>
+
+      {/* Document Ingestion Area */}
+      <div className="p-3 border-b border-gray-700 flex flex-col gap-2">
+        <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+          Context Document
+        </div>
+        <textarea
+          rows={3}
+          value={docText}
+          onChange={(e) => setDocText(e.target.value)}
+          placeholder="Paste text here to index into the vector DB..."
+          className="w-full p-2 text-xs rounded-md bg-gray-700 text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none"
+        />
+        <button
+          onClick={handleIndex}
+          disabled={isIndexing || !docText.trim()}
+          className="w-full px-2 py-1.5 bg-blue-600 text-white rounded text-xs font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        >
+          {isIndexing ? 'Indexing...' : 'Index Document'}
         </button>
       </div>
 

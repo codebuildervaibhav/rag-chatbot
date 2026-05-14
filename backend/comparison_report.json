@@ -1,0 +1,137 @@
+[
+    {
+        "query": "How does the system handle peak load?",
+        "ground_truth": "chunk_1",
+        "strategy_a": {
+            "mrr": 1.0,
+            "top_chunks": [
+                {
+                    "id": "chunk_1",
+                    "score": 0.38165587186813354,
+                    "content": "[Chunk 1: Autoscaling & Concurrency]\nThe inference processing pipeline utilizes a dynamically scalin..."
+                },
+                {
+                    "id": "chunk_2",
+                    "score": 0.26240524649620056,
+                    "content": "[Chunk 2: Fault Tolerance & Retries]\nResiliency in the microservices layer is achieved through the i..."
+                },
+                {
+                    "id": "chunk_4",
+                    "score": 0.18727706372737885,
+                    "content": "[Chunk 4: Caching & Latency Optimization]\nTo mitigate redundant API calls and reduce overall compute..."
+                }
+            ]
+        },
+        "strategy_b": {
+            "mrr": 1.0,
+            "expanded_query": "How does the architecture manage burst traffic, autoscaling, concurrency, and high demand through dynamic worker pools and Kafka?",
+            "top_chunks": [
+                {
+                    "id": "chunk_1",
+                    "score": 0.7708346843719482,
+                    "content": "[Chunk 1: Autoscaling & Concurrency]\nThe inference processing pipeline utilizes a dynamically scalin..."
+                },
+                {
+                    "id": "chunk_2",
+                    "score": 0.4309195280075073,
+                    "content": "[Chunk 2: Fault Tolerance & Retries]\nResiliency in the microservices layer is achieved through the i..."
+                },
+                {
+                    "id": "chunk_4",
+                    "score": 0.274605929851532,
+                    "content": "[Chunk 4: Caching & Latency Optimization]\nTo mitigate redundant API calls and reduce overall compute..."
+                }
+            ]
+        }
+    },
+    {
+        "query": "What is the procedure for the blue screen?",
+        "ground_truth": "chunk_2",
+        "strategy_a": {
+            "mrr": 0.3333333333333333,
+            "top_chunks": [
+                {
+                    "id": "chunk_1",
+                    "score": 0.06895754486322403,
+                    "content": "[Chunk 1: Autoscaling & Concurrency]\nThe inference processing pipeline utilizes a dynamically scalin..."
+                },
+                {
+                    "id": "chunk_5",
+                    "score": 0.04005489870905876,
+                    "content": "[Chunk 5: Security & Access Control]\nAll cross-service communication within the virtual private clou..."
+                },
+                {
+                    "id": "chunk_2",
+                    "score": 0.01982368342578411,
+                    "content": "[Chunk 2: Fault Tolerance & Retries]\nResiliency in the microservices layer is achieved through the i..."
+                }
+            ]
+        },
+        "strategy_b": {
+            "mrr": 1.0,
+            "expanded_query": "What is the fault tolerance, resiliency, circuit breaker, and fallback mechanism for node failures and timeouts?",
+            "top_chunks": [
+                {
+                    "id": "chunk_2",
+                    "score": 0.5272763967514038,
+                    "content": "[Chunk 2: Fault Tolerance & Retries]\nResiliency in the microservices layer is achieved through the i..."
+                },
+                {
+                    "id": "chunk_1",
+                    "score": 0.2991775870323181,
+                    "content": "[Chunk 1: Autoscaling & Concurrency]\nThe inference processing pipeline utilizes a dynamically scalin..."
+                },
+                {
+                    "id": "chunk_5",
+                    "score": 0.1266552358865738,
+                    "content": "[Chunk 5: Security & Access Control]\nAll cross-service communication within the virtual private clou..."
+                }
+            ]
+        }
+    },
+    {
+        "query": "How do we stop the spinning wheel of death?",
+        "ground_truth": "chunk_4",
+        "strategy_a": {
+            "mrr": 0.0,
+            "top_chunks": [
+                {
+                    "id": "chunk_1",
+                    "score": 0.03183756396174431,
+                    "content": "[Chunk 1: Autoscaling & Concurrency]\nThe inference processing pipeline utilizes a dynamically scalin..."
+                },
+                {
+                    "id": "chunk_2",
+                    "score": 0.029936347156763077,
+                    "content": "[Chunk 2: Fault Tolerance & Retries]\nResiliency in the microservices layer is achieved through the i..."
+                },
+                {
+                    "id": "chunk_3",
+                    "score": -0.04716399312019348,
+                    "content": "[Chunk 3: Data Retrieval & Vector Storage]\nFor semantic context injection, the system relies on a sh..."
+                }
+            ]
+        },
+        "strategy_b": {
+            "mrr": 1.0,
+            "expanded_query": "How does the system optimize latency, reduce compute expenditure, and implement semantic caching?",
+            "top_chunks": [
+                {
+                    "id": "chunk_4",
+                    "score": 0.6244389414787292,
+                    "content": "[Chunk 4: Caching & Latency Optimization]\nTo mitigate redundant API calls and reduce overall compute..."
+                },
+                {
+                    "id": "chunk_1",
+                    "score": 0.3502258062362671,
+                    "content": "[Chunk 1: Autoscaling & Concurrency]\nThe inference processing pipeline utilizes a dynamically scalin..."
+                },
+                {
+                    "id": "chunk_3",
+                    "score": 0.3315119743347168,
+                    "content": "[Chunk 3: Data Retrieval & Vector Storage]\nFor semantic context injection, the system relies on a sh..."
+                }
+            ]
+        }
+    }
+]

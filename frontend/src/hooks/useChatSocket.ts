@@ -250,6 +250,41 @@ export const useChatSocket = (options?: ChatOptions) => {
     setIsGenerating(false);
   }, []);
 
+  const generateBenchmarkReport = useCallback(async () => {
+    if (!isConnected || isGenerating) return;
+
+    setIsGenerating(true);
+    const assistantId = `${Date.now()}-ai-benchmark`;
+    setMessages((prev) => [
+      ...prev,
+      { id: assistantId, role: 'assistant', content: 'Generating benchmark report...' },
+    ]);
+
+    try {
+      const res = await fetch(`${apiBaseUrl}/api/documents/benchmark`);
+      if (!res.ok) throw new Error('Failed to generate benchmark');
+      const data = await res.json();
+
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === assistantId
+            ? { ...m, content: data.report }
+            : m
+        )
+      );
+    } catch (error: any) {
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === assistantId
+            ? { ...m, content: `❌ Error: ${error.message}` }
+            : m
+        )
+      );
+    } finally {
+      setIsGenerating(false);
+    }
+  }, [isConnected, isGenerating, apiBaseUrl]);
+
   return {
     messages,
     conversations,
@@ -265,5 +300,6 @@ export const useChatSocket = (options?: ChatOptions) => {
     isConnected,
     isGenerating,
     stopGeneration,
+    generateBenchmarkReport,
   };
 };

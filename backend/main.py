@@ -8,7 +8,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from database import init_db
-from routers import chat, conversations
+from routers import chat, conversations, documents
 
 
 @asynccontextmanager
@@ -41,6 +41,7 @@ app.add_middleware(
 # Mount routers
 app.include_router(chat.router,          prefix="/api", tags=["chat"])
 app.include_router(conversations.router, prefix="/api", tags=["conversations"])
+app.include_router(documents.router,     prefix="/api/documents", tags=["documents"])
 
 
 @app.get("/api/health", tags=["health"])

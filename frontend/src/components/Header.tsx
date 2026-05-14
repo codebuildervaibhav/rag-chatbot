@@ -3,9 +3,9 @@
 // Top bar — app title + mode-aware LED indicator + stop button.
 //
 // LED behaviour:
-//   🟢 Green  → Local mode, Ollama UP (Murphy serving)
-//   🟡 Amber  → Local mode, Ollama DOWN (Casper serving as fallback)
-//   🔵 Blue   → Cloud mode active (Casper/GPT-4o-mini)
+//   🟣 Purple → Strategy A (Raw Vector Search)
+//   🟡 Amber  → Not used
+//   🔵 Blue   → Strategy B (AI-Enhanced Retrieval)
 //   🔴 Red    → Backend unreachable
 
 import React from 'react';
@@ -16,7 +16,6 @@ interface HeaderProps {
   isGenerating: boolean;
   onStop: () => void;
   mode: Mode;
-  ollamaAvailable: boolean;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -24,55 +23,41 @@ export const Header: React.FC<HeaderProps> = ({
   isGenerating,
   onStop,
   mode,
-  ollamaAvailable,
 }) => {
-  // Compute LED state
-  const isFallback = mode === 'local' && !ollamaAvailable;
-
   const ledColor = !isConnected
     ? 'bg-red-400'
-    : isFallback
-    ? 'bg-amber-400'
     : mode === 'local'
-    ? 'bg-green-400'
+    ? 'bg-purple-400'
     : 'bg-blue-400';
 
   const ledGlow = !isConnected
     ? 'shadow-red-500/60'
-    : isFallback
-    ? 'shadow-amber-500/60'
     : mode === 'local'
-    ? 'shadow-green-500/60'
+    ? 'shadow-purple-500/60'
     : 'shadow-blue-500/60';
 
   const statusText = !isConnected
     ? 'Offline'
-    : isFallback
-    ? 'Casper · Fallback'
     : mode === 'local'
-    ? 'Murphy · Local'
-    : 'Casper · Cloud';
+    ? 'Strategy A · Raw'
+    : 'Strategy B · AI-Enhanced';
 
   const statusColor = !isConnected
     ? 'text-red-400'
-    : isFallback
-    ? 'text-amber-400'
     : mode === 'local'
-    ? 'text-green-400'
+    ? 'text-purple-400'
     : 'text-blue-400';
 
   const subtitle = !isConnected
     ? 'Backend offline'
-    : isFallback
-    ? 'Ollama unavailable · using GPT-4o-mini'
     : mode === 'local'
-    ? 'Ollama/Gemma · NLTK + VADER'
-    : 'GPT-4o-mini · OpenAI';
+    ? 'Raw Vector Embedding Search'
+    : 'LLM Query Expansion + Vector Search';
 
   return (
     <header className="flex items-center justify-between px-6 py-4 bg-gray-800 shadow-md border-b border-gray-700">
       <div>
-        <h1 className="text-xl font-bold text-blue-400">AI Chatbot</h1>
+        <h1 className="text-xl font-bold text-blue-400">Context-Aware Retrieval Engine</h1>
         <p className="text-xs text-gray-500 transition-all duration-300">{subtitle}</p>
       </div>
 

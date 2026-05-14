@@ -1,3 +1,24 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  .markdown-content table {
+    @apply w-full text-left border-collapse my-4 text-sm;
+  }
+  .markdown-content th {
+    @apply border border-gray-600 bg-gray-800 px-4 py-2 font-semibold text-gray-200;
+  }
+  .markdown-content td {
+    @apply border border-gray-600/50 px-4 py-2 text-gray-300;
+  }
+  .markdown-content tr:nth-child(even) {
+    @apply bg-gray-800/30;
+  }
+  .markdown-content p {
+    @apply mb-3 last:mb-0 leading-relaxed;
+  }
+  .markdown-content h3 {
+    @apply text-lg font-bold mt-4 mb-2 text-blue-300;
+  }
+}

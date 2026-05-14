@@ -24,10 +24,8 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 
 from database import create_conversation, save_message, touch_conversation
-# from database import update_message_insights  # (Alternative strategy import)
 from services.insight_extractor import extract_insights
-from services.ollama_service import check_ollama_health, get_chat_response
-from services.openai_service import get_openai_response
+from rag_engine import rag_engine
 
 router = APIRouter()
 
@@ -86,30 +84,33 @@ async def chat(request: ChatRequest):
     # user_msg = save_message(conversation_id=conv_id, role="user", content=request.message)
     save_message(conversation_id=conv_id, role="user", content=request.message)
 
-    # ── Generate reply ─────────────────────────────────────────────────────────────
-    reply: str
+    # ── Generate RAG Results ───────────────────────────────────────────────────
+    reply = ""
     fallback_used = False
 
-    if request.mode == "local":
-        # LOCAL: Try Ollama first. If unreachable, silently fall back to OpenAI.
-        ollama_ok = await check_ollama_health()
-        if ollama_ok:
-            try:
-                reply = await get_chat_response(request.message, history)
-            except Exception:
-                ollama_ok = False  # Ollama failed mid-request
-
-        if not ollama_ok:
-            # Silent fallback — use Cloud, flag it so frontend can show amber LED
-            fallback_used = True
-            reply = await get_openai_response(request.message, history)
+    if rag_engine.store.index.ntotal == 0:
+        reply = "⚠️ **No document indexed.** Please upload a document context first to perform vector search."
     else:
-        # CLOUD: OpenAI/Casper directly
-        reply = await get_openai_response(request.message, history)
+        if request.mode == "local":
+            # Strategy A (Raw Search)
+            res = rag_engine.orchestrator.run_strategy_a(request.message)
+            reply = f"### 📊 Strategy A: Raw Vector Search\n\n"
+            reply += f"**Original Query:** `{res['query']}`\n\n"
+            for i, result in enumerate(res['results'], 1):
+                chunk_id, score, meta = result
+                reply += f"**{i}. {chunk_id}** (Score: {score:.4f})\n> {meta['content']}\n\n"
+        else:
+            # Strategy B (AI-Enhanced)
+            res = rag_engine.orchestrator.run_strategy_b(request.message)
+            reply = f"### 🧠 Strategy B: AI-Enhanced Retrieval\n\n"
+            reply += f"**Original Query:** `{res['query']}`\n"
+            reply += f"**Expanded Query:** `{res['expanded_query']}`\n\n"
+            for i, result in enumerate(res['results'], 1):
+                chunk_id, score, meta = result
+                reply += f"**{i}. {chunk_id}** (Score: {score:.4f})\n> {meta['content']}\n\n"
 
-    # ── Extract insights (use cloud if fallback triggered) ─────────────────────
-    insight_mode = "cloud" if fallback_used else request.mode
-    insights = await extract_insights(request.message, mode=insight_mode)
+    # ── Extract insights ───────────────────────────────────────────────────────
+    insights = await extract_insights(request.message, mode="local")
 
     # Example of the slower alternative strategy (updating the user row directly):
     # update_message_insights(user_msg["id"], intent=insights["intent"], sentiment=insights["sentiment"])

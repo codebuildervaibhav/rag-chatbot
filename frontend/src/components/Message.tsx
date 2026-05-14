@@ -11,6 +11,7 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import dark from 'react-syntax-highlighter/dist/esm/styles/prism/dark';
+import remarkGfm from 'remark-gfm';
 import { Message as ChatMessage, Insights } from '../hooks/useChatSocket';
 
 interface MessageProps {
@@ -88,35 +89,33 @@ const Message: React.FC<MessageProps> = ({ message }) => {
         }`}
       >
         {/* Message content with markdown + syntax highlighting */}
-        <ReactMarkdown
-          children={message.content}
-          components={{
-            code({ node, inline, className, children, ...props }: any) {
-              const match = /language-(\w+)/.exec(className || '');
-              return !inline && match ? (
-                <SyntaxHighlighter
-                  children={String(children).replace(/\n$/, '')}
-                  style={dark}
-                  language={match[1]}
-                  PreTag="div"
-                  {...props}
-                />
-              ) : (
-                <code
-                  className={`${className} bg-black/20 px-1 py-0.5 rounded text-sm font-mono`}
-                  {...props}
-                >
-                  {children}
-                </code>
-              );
-            },
-          }}
-        />
-
-        {/* Insights badge — only on assistant messages that have insights data */}
-        {!isUser && message.insights && (
-          <InsightsBadge insights={message.insights} />
-        )}
+        <div className="markdown-content">
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            children={message.content}
+            components={{
+              code({ node, inline, className, children, ...props }: any) {
+                const match = /language-(\w+)/.exec(className || '');
+                return !inline && match ? (
+                  <SyntaxHighlighter
+                    children={String(children).replace(/\n$/, '')}
+                    style={dark}
+                    language={match[1]}
+                    PreTag="div"
+                    {...props}
+                  />
+                ) : (
+                  <code
+                    className={`${className} bg-black/20 px-1 py-0.5 rounded text-sm font-mono`}
+                    {...props}
+                  >
+                    {children}
+                  </code>
+                );
+              },
+            }}
+          />
+        </div>
 
         {/* Fallback note — shown when Local was selected but Ollama was unavailable */}
         {!isUser && message.fallbackUsed && (

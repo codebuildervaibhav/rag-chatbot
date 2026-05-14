@@ -14,7 +14,7 @@ function App() {
     conversationId,
     mode,
     setMode,
-    ollamaAvailable,
+    //ollamaAvailable,
     sendMessage,
     loadConversation,
     deleteConversation,
@@ -22,6 +22,7 @@ function App() {
     isConnected,
     isGenerating,
     stopGeneration,
+    generateBenchmarkReport,
   } = useChatSocket();
 
   const [input, setInput] = useState<string>('');
@@ -41,7 +42,6 @@ function App() {
         isGenerating={isGenerating}
         onStop={stopGeneration}
         mode={mode}
-        ollamaAvailable={ollamaAvailable}
       />
 
       {/* Main content: sidebar + chat */}
@@ -54,6 +54,7 @@ function App() {
           onDeleteConversation={deleteConversation}
           onNewChat={startNewChat}
           isGenerating={isGenerating}
+          onGenerateReport={generateBenchmarkReport}
         />
 
         {/* Chat area */}

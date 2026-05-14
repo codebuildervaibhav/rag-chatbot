@@ -4,10 +4,10 @@
 //
 // Layout (bottom bar):
 //   [ textarea                                              ]
-//   [ 🐾 Local ⟷ ☁️ Cloud ]              [ Send ▶ ]
+//   [ 📊 Strategy A ⟷ 🧠 Strategy B ]              [ Send ▶ ]
 //
 // - Enter → send, Shift+Enter → newline
-// - Pill toggle switches between Local (Murphy) and Cloud (Casper) mode
+// - Pill toggle switches between Strategy A (Raw) and Strategy B (Enhanced) mode
 // - Toggle is disabled while a response is generating
 
 import React, { Dispatch, SetStateAction } from 'react';
@@ -70,11 +70,11 @@ const ChatInput: React.FC<ChatInputProps> = ({
             disabled={isGenerating}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 ${
               mode === 'local'
-                ? 'bg-green-600 text-white shadow-md shadow-green-900/50'
+                ? 'bg-purple-600 text-white shadow-md shadow-purple-900/50'
                 : 'text-gray-400 hover:text-gray-200'
             } disabled:opacity-50 disabled:cursor-not-allowed`}
           >
-            🐾 <span>Local</span>
+            📊 <span>Strategy A</span>
           </button>
 
           <button
@@ -87,13 +87,13 @@ const ChatInput: React.FC<ChatInputProps> = ({
                 : 'text-gray-400 hover:text-gray-200'
             } disabled:opacity-50 disabled:cursor-not-allowed`}
           >
-            ☁️ <span>Cloud</span>
+            🧠 <span>Strategy B</span>
           </button>
         </div>
 
         {/* Mode label — small hint */}
         <span className="text-xs text-gray-500">
-          {mode === 'local' ? 'Murphy · Ollama + NLP' : 'Casper · GPT-4o-mini'}
+          {mode === 'local' ? 'Raw Vector Search' : 'AI-Enhanced Retrieval'}
         </span>
 
         {/* Send button */}

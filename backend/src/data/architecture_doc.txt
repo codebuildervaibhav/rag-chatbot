@@ -1,0 +1,14 @@
+[Chunk 1: Autoscaling & Concurrency]
+The inference processing pipeline utilizes a dynamically scaling worker pool managed by Kubernetes Horizontal Pod Autoscaler (HPA). During high traffic events, the API gateway routes incoming requests to an asynchronous message broker (Kafka). Worker nodes consume these messages, allowing the architecture to absorb burst traffic without dropping connections. Connection pooling is strictly enforced at the database level to prevent connection starvation during aggressive scaling events.
+
+[Chunk 2: Fault Tolerance & Retries]
+Resiliency in the microservices layer is achieved through the implementation of circuit breaker patterns and exponential backoff strategies. If a downstream LLM endpoint experiences a timeout or returns a 503 HTTP status, the orchestration layer does not immediately fail the request. Instead, it routes the payload to a Dead Letter Queue (DLQ) for asynchronous inspection and triggers a fallback mechanism to a secondary, smaller cached model to ensure high availability.
+
+[Chunk 3: Data Retrieval & Vector Storage]
+For semantic context injection, the system relies on a sharded vector database utilizing an HNSW (Hierarchical Navigable Small World) index graph. To optimize latency, we implement a two-stage retrieval pipeline. An initial fast pass retrieves the top 50 candidate chunks using dot-product inner similarity. Subsequently, a cross-encoder ranking model scores these candidates, distilling them down to the 3 most contextually relevant documents to minimize the context window overhead before generation.
+
+[Chunk 4: Caching & Latency Optimization]
+To mitigate redundant API calls and reduce overall compute expenditure, a semantic caching layer is deployed at the edge. Unlike standard exact-match Redis caches, this layer computes a lightweight embedding of the incoming query and performs a cosine similarity check against recently answered prompts. If the similarity threshold exceeds 0.95, the system serves the cached response directly, bypassing the heavy generative inference step entirely.
+
+[Chunk 5: Security & Access Control]
+All cross-service communication within the virtual private cloud (VPC) is secured via mutual TLS (mTLS). User-level permissions are strictly enforced using JSON Web Tokens (JWT) mapped to a Role-Based Access Control (RBAC) matrix. PII (Personally Identifiable Information) detected in the input stream is aggressively redacted using a localized NLP model before the payload is ever transmitted to external cloud provider APIs.
