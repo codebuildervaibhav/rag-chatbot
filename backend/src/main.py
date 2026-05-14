@@ -6,7 +6,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from src.data.loader import DatasetLoader
 from src.embeddings.mock_vertex import MockVertexEmbeddingModel
 from src.storage.faiss_store import FAISSVectorStore
-from src.retrieval.query_expander import MockVertexExpander
+from src.expanders.mock_vertex import MockVertexExpander
 from src.retrieval.orchestrator import RetrievalOrchestrator
 from src.evaluation.metrics import BenchmarkMetrics
 from tabulate import tabulate

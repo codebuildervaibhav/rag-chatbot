@@ -6,7 +6,7 @@ import pytest
 import numpy as np
 from src.embeddings.mock_vertex import MockVertexEmbeddingModel
 from src.storage.faiss_store import FAISSVectorStore
-from src.retrieval.query_expander import MockVertexExpander
+from src.expanders.mock_vertex import MockVertexExpander
 from src.retrieval.orchestrator import RetrievalOrchestrator
 
 @pytest.fixture

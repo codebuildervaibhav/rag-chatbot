@@ -3,7 +3,7 @@ from pydantic import BaseModel
 import os
 from rag_engine import rag_engine
 from src.data.loader import DatasetLoader
-from src.retrieval.query_expander import MockVertexExpander
+from src.expanders.mock_vertex import MockVertexExpander
 
 router = APIRouter()
 
