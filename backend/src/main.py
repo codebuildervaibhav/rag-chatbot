@@ -6,7 +6,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from src.data.loader import DatasetLoader
 from src.embeddings.mock_vertex import MockVertexEmbeddingModel
 from src.storage.faiss_store import FAISSVectorStore
-from src.retrieval.query_expander import MockVertexExpander
+from src.expanders.mock_vertex import MockVertexExpander
 from src.retrieval.orchestrator import RetrievalOrchestrator
 from src.evaluation.metrics import BenchmarkMetrics
 from tabulate import tabulate
@@ -21,6 +21,10 @@ def run_benchmark():
     docs = DatasetLoader.load_text(doc_path)
     store.add_vectors(embedder.embed_batch([d.content for d in docs]), [{"id": d.id, "content": d.content} for d in docs])
 
+    # NOTE: Ground truth is explicitly defined for the static assessment dataset.
+    # In the dynamic UI benchmark mode (see routers/documents.py),
+    # ground truth is derived via Answer-to-Chunk similarity search, enabling
+    # MRR calculation on arbitrary conversations without pre-labeling.
     queries = [
         ("How does the system handle peak load?", "chunk_1"),
         ("What is the procedure for the blue screen?", "chunk_2"),

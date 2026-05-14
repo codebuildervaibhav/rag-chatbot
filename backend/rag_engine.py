@@ -1,6 +1,6 @@
 from src.embeddings.mock_vertex import MockVertexEmbeddingModel
 from src.storage.faiss_store import FAISSVectorStore
-from src.retrieval.query_expander import OpenAIExpander
+from src.expanders.openai_expander import OpenAIExpander
 from src.retrieval.orchestrator import RetrievalOrchestrator
 from src.data.loader import DatasetLoader
 

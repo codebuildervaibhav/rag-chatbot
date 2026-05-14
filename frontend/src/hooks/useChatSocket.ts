@@ -261,7 +261,11 @@ export const useChatSocket = (options?: ChatOptions) => {
     ]);
 
     try {
-      const res = await fetch(`${apiBaseUrl}/api/documents/benchmark`);
+      const url = conversationId 
+        ? `${apiBaseUrl}/api/documents/benchmark?conversation_id=${conversationId}`
+        : `${apiBaseUrl}/api/documents/benchmark`;
+        
+      const res = await fetch(url);
       if (!res.ok) throw new Error('Failed to generate benchmark');
       const data = await res.json();
 

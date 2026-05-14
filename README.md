@@ -20,13 +20,37 @@ An advanced RAG approach utilizing a Language Model (LLM) to rewrite and expand 
 
 ---
 
+## 🏗️ Modular Architecture
+
+This project is built using **Abstract Base Classes (ABC)** to ensure components are swappable and adhere to strict interfaces, a critical requirement for production systems.
+
+```text
+backend/src/
+├── embeddings/
+│   ├── base.py              # ABC: EmbeddingEngine
+│   └── mock_vertex.py       # Simulates vertexai TextEmbeddingModel using sentence-transformers
+├── storage/
+│   ├── base.py              # ABC: VectorStore
+│   └── faiss_store.py       # FAISS implementation with IndexFlatIP (Cosine Similarity)
+├── expanders/
+│   ├── mock_vertex.py       # Deterministic mock of vertexai GenerativeModel (CLI)
+│   └── openai_expander.py   # OPTIONAL: Live GPT-4o-mini expansion for Dynamic UI Mode
+├── retrieval/
+│   └── orchestrator.py      # Toggles between Strategy A and Strategy B
+└── main.py                  # CLI Benchmarking engine
+```
+By relying on `EmbeddingEngine` and `VectorStore` interfaces, migrating from local FAISS to **Vertex AI Matching Engine** requires zero changes to the `RetrievalOrchestrator`.
+
+---
+
 ## 🛠️ Technology Stack
 
 | Component | Technology | Purpose |
 |---|---|---|
-| **Embeddings** | `sentence-transformers` | Generates semantic vectors (simulating Vertex AI Gecko) |
-| **Vector Database** | `FAISS` (Facebook AI Similarity Search) | Local, high-performance cosine similarity search |
-| **Query Expansion** | `OpenAI` / Mocked SDK | LLM-based query rewriting |
+| **Embeddings** | `sentence-transformers` (`all-MiniLM-L6-v2`) | Mocks `vertexai.language_models.TextEmbeddingModel` locally |
+| **Vector Database** | `FAISS` (`IndexFlatIP`) | Cosine similarity via L2-normalized Inner Product |
+| **Query Expansion (Primary)** | `MockVertexExpander` | Mocks `vertexai.generative_models.GenerativeModel` with deterministic mappings |
+| **Query Expansion (Optional)** | `OpenAI GPT-4o-mini` | Live LLM expansion for the Dynamic UI Mode bonus feature |
 | **Backend API** | `FastAPI` (Python) | High-throughput async REST API |
 | **Frontend UI** | `React` + `TailwindCSS` | Interactive chatbot and document ingestion dashboard |
 | **Testing** | `Pytest` | Automated pipeline and component testing |
@@ -46,10 +70,11 @@ python -m venv venv
 pip install -r requirements.txt
 ```
 
-**Environment Variables:**
+**Environment Variables (Optional):**
 Create a `.env` file in the `backend/` directory:
 ```env
-# Required for dynamic UI query expansion
+# OPTIONAL — only needed for the Dynamic UI query expansion bonus feature
+# The CLI benchmark (python src/main.py) works without any API key
 OPENAI_API_KEY=your-api-key-here
 ```
 
